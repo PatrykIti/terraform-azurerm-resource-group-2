@@ -1,0 +1,97 @@
+name: Create Terraform Module Documentation
+on: 
+  - pull_request
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write  
+  checks: write
+jobs:
+  terraform-docs:
+    name: Generate Terraform Documenation
+    if: ${{ contains(github.event.pull_request.labels.*.name, 'feat') || contains(github.event.pull_request.labels.*.name, 'BREAKING CHANGE') || contains(github.event.pull_request.labels.*.name, 'fix') || contains(github.event.pull_request.labels.*.name, 'docs') || contains(github.event.pull_request.labels.*.name, 'refactor') || contains(github.event.pull_request.labels.*.name, 'chore')}}
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: ${{ github.event.pull_request.head.ref }}
+    - name: Generate Terraform Documentation
+      uses: aquasecurity/tfsec-pr-commenter-action@v1.2.0
+      with:
+        github_token: ${{ github.token }}
+    - name: Render terraform docs inside the README.md and push changes back to PR branch
+      uses: terraform-docs/gh-actions@v1.0.0
+      with:
+        working-dir: .
+        output-method: inject
+        config-file:  .config/.terraform-docs.yml
+        git-push: "true"
+  generate-badges:
+    name: Generate Badges
+    runs-on: ubuntu-latest 
+    if: ${{ contains(github.event.pull_request.labels.*.name, 'feat') || contains(github.event.pull_request.labels.*.name, 'BREAKING CHANGE') || contains(github.event.pull_request.labels.*.name, 'fix')}}
+    needs:
+      - terraform-docs
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: ${{ github.event.pull_request.head.ref }}
+    - name: 'Get Previous tag'
+      id: previoustag
+      uses: "WyriHaximus/github-action-get-previous-tag@v1"
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        fallback: 0.0.0
+        prefix: v
+    - name: 'Get next version'
+      id: semvers
+      uses: "WyriHaximus/github-action-next-semvers@v1"
+      with:
+        version: ${{ steps.previoustag.outputs.tag }}
+    - name: Checking Minor version
+      if: contains(github.event.pull_request.labels.*.name, 'feat')
+      shell: pwsh
+      run: |
+        $tag = "${{ steps.semvers.outputs.v_minor }}"
+        echo "tag=$($tag)" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
+    - name: Checking Major version
+      if: contains(github.event.pull_request.labels.*.name, 'BREAKING CHANGE')
+      shell: pwsh
+      run: |
+        $tag = "${{ steps.semvers.outputs.v_major }}"
+        echo "tag=$($tag)" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
+    - name: Checking Patch version
+      if: contains(github.event.pull_request.labels.*.name, 'fix')
+      shell: pwsh
+      run: |
+        $tag = "${{ steps.semvers.outputs.v_patch }}"
+        echo "tag=$($tag)" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
+    - uses: PatrykIti/add-badges@v1.0.0
+      name: Add badges to README
+      env:
+        repo_url: ${{ github.event.repository.html_url }}
+        repo_name: ${{ github.event.repository.name }}
+        repo_owner: ${{ github.event.repository.owner.login }}
+      with:
+        ref: ${{ github.event.pull_request.head.ref }}
+        GITHUB_TOKEN: ${{ github.token }}
+        commit_message: "Adding badges for release: ${{ env.tag }}"
+        badges: |
+          [
+            {
+              "badge": "https://img.shields.io/github/license/${{ env.repo_owner }}/${{ env.repo_name }}?style=flat-square",
+              "alt": "license GPL-3.0",
+              "link": "${{ env.repo_url }}/blob/main/LICENSE"
+            },
+            {
+              "badge": "https://img.shields.io/badge/language-HCL-purple.svg?style=flat-square",
+              "alt": "Language",
+              "link": "https://www.hashicorp.org"
+            },
+            {
+              "badge": "https://img.shields.io/badge/Ver.-${{ env.tag }}-brightgreen.svg?style=flat-square",
+              "alt": "Ver. ${{ env.tag }}",
+              "link": "https://github.com/PatrykIti/testing-gitactions/releases/tag/${{ env.tag }}"
+            }
+          ]

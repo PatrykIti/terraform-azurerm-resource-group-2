@@ -28,10 +28,5 @@ terraform.rc
 # SSH Keys
 *.pem
 
-#Ignoring actions outputs
-commenter*
-*.checksum
-*.checksums
-tfsec*
-result.json
-*.json
+# Providers file
+providers.tf

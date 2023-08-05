@@ -1,0 +1,15 @@
+name: Pull Request Checks for proper labels
+on:
+  - pull_request
+jobs:
+  check_semver_label:
+    name: Check for semantic version label
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+      - uses: docker://agilepathway/pull-request-label-checker:latest
+        with:
+          one_of: BREAKING CHANGE,feat,fix,chore,docs,refactor,changelog
+          repo_token: ${{ github.token }}
