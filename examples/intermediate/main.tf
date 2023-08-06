@@ -68,7 +68,7 @@ module "rg_secondary" {
 #Testing outputs from module for Primary region
 #Only for showing how to get them after module execution
 #Outputs can be passed between modules of different resources
-#Please be awar that in this approach all outputs will be type of list of strings
+#Please be aware that in this approach all outputs will be type of list of strings
 output "resource_group_primary_name" {
   value = module.rg_primary.name
 }
@@ -85,7 +85,7 @@ output "resource_group_primary_id" {
 #Testing outputs from module for Secondary region
 #Only for showing how to get them after module execution
 #Outputs can be passed between modules of different resources
-#Please be awar that in this approach all outputs will be type of list of strings
+#Please be aware that in this approach all outputs will be type of list of strings
 output "resource_group_secondary_name" {
   value = module.rg_secondary.name
 }

@@ -49,7 +49,7 @@ module "rg_secondary" {
 #Testing outputs from module for Primary region
 #Only for showing how to get them after module execution
 #Outputs can be passed between modules of different resources
-#Please be awar that in this approach all outputs will be type of list of strings
+#Please be aware that in this approach all outputs will be type of list of strings
 output "resource_groups_primary" {
   value = [for rg in local.list_of_resource_groups : {
       name        = module.rg_primary[rg].name
@@ -63,7 +63,7 @@ output "resource_groups_primary" {
 #Testing outputs from module for Secondary region
 #Only for showing how to get them after module execution
 #Outputs can be passed between modules of different resources
-#Please be awar that in this approach all outputs will be type of list of strings
+#Please be aware that in this approach all outputs will be type of list of strings
 output "resource_groups_secondary" {
   value = [for rg in local.list_of_resource_groups : {
       name        = module.rg_secondary[rg].name

@@ -23,7 +23,7 @@ module "rg" {
 #Testing outputs from module
 #Only for showing how to get them after module execution
 #Outputs can be passed between modules of different resources
-#Please be awar that in this approach all outputs will be type of list of strings
+#Please be aware that in this approach all outputs will be type of list of strings
 output "name" {
   value = module.rg.name
 }
