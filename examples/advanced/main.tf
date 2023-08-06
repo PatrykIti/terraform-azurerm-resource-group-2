@@ -20,7 +20,7 @@ locals{
 
 #Primary Location
 module "rg_primary" {
-    source = "https://dev.azure.com/PC-ITI/ECW%20-%20Engine%20Car%20Watcher/_git/terraform-azurerm-resource-group-2?ref=v1.0.0"
+    source = "git::git::https://github.com/PatrykIti/terraform-azurerm-resource-group-2.git?ref=v1.0.0"
     for_each = {for resource_group in local.list_of_resource_groups : resource_group => resource_group}
     resource_group = [ 
       {
@@ -34,7 +34,7 @@ module "rg_primary" {
 
 #Secondary Region
 module "rg_secondary" {
-    source = "https://dev.azure.com/PC-ITI/ECW%20-%20Engine%20Car%20Watcher/_git/terraform-azurerm-resource-group-2?ref=v1.0.0"
+    source = "git::https://github.com/PatrykIti/terraform-azurerm-resource-group-2.git?ref=v1.0.0"
     for_each = {for resource_group in local.list_of_resource_groups : resource_group => resource_group}
     resource_group = [ 
       {
