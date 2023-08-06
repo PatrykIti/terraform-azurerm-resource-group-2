@@ -1,5 +1,8 @@
 <!-- [START BADGES] -->
-
+<!-- Please keep comment here to allow auto update -->
+[![license GPL-3.0](https://img.shields.io/github/license/PatrykIti/terraform-azurerm-resource-group-2?style=flat-square)](https://github.com/PatrykIti/terraform-azurerm-resource-group-2/blob/main/LICENSE)
+[![Language](https://img.shields.io/badge/language-HCL-purple.svg?style=flat-square)](https://www.hashicorp.org)
+[![Ver. v1.0.0](https://img.shields.io/badge/Ver.-v1.0.0-brightgreen.svg?style=flat-square)](https://github.com/PatrykIti/testing-gitactions/releases/tag/v1.0.0)
 <!-- [END BADGES] -->
 <h1 align="center">Terraform module for managing Azure Resource Groups (2 approach)</h1>
 
