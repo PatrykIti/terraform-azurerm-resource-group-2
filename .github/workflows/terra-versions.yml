@@ -1,0 +1,114 @@
+name: Create Terraform Module Versioning
+on:
+  pull_request:
+    types: [closed]
+jobs:
+  check-version:
+    name: Check Tag Version
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest       
+    outputs:
+      tag_v_major: ${{ steps.semvers.outputs.v_major }}
+      tag_v_minor: ${{ steps.semvers.outputs.v_minor }}
+      tag_v_patch: ${{ steps.semvers.outputs.v_patch }}
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0   
+    - name: 'Get Previous tag'
+      id: previoustag
+      uses: "WyriHaximus/github-action-get-previous-tag@v1"
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        fallback: 0.0.0
+        prefix: v
+    - name: 'Get next version'
+      id: semvers
+      uses: "WyriHaximus/github-action-next-semvers@v1"
+      with:
+        version: ${{ steps.previoustag.outputs.tag }}
+  next-release:
+    name: Generate Next Version
+    runs-on: ubuntu-latest 
+    if: ${{ contains(github.event.pull_request.labels.*.name, 'feat') || contains(github.event.pull_request.labels.*.name, 'BREAKING CHANGE') || contains(github.event.pull_request.labels.*.name, 'fix')}}
+    needs:
+      - check-version
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0 
+    - uses: rickstaa/action-create-tag@v1
+      if: contains(github.event.pull_request.labels.*.name, 'feat')
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        tag: "${{ needs.check-version.outputs.tag_v_minor }}"
+    - uses: rickstaa/action-create-tag@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      if: contains(github.event.pull_request.labels.*.name, 'BREAKING CHANGE')
+      with:
+        tag: "${{ needs.check-version.outputs.tag_v_major }}"
+    - uses: rickstaa/action-create-tag@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      if: contains(github.event.pull_request.labels.*.name, 'fix')
+      with:
+        tag: "${{ needs.check-version.outputs.tag_v_patch }}"
+  nothing-to-release:
+    name: No version to update
+    runs-on: ubuntu-latest
+    if: ${{ contains(github.event.pull_request.labels.*.name, 'docs') || contains(github.event.pull_request.labels.*.name, 'refactor') || contains(github.event.pull_request.labels.*.name, 'chore')}}
+    needs:
+      - check-version
+    steps:
+      - name: Changes related to docs
+        if: contains(github.event.pull_request.labels.*.name, 'docs') 
+        shell: bash
+        run:  echo "There were changes releted to 'documentation' so the version will be not updated."
+      - name: Changes related to refactoring
+        if: contains(github.event.pull_request.labels.*.name, 'refactor') 
+        shell: bash
+        run:  echo "There was some refactor of the code so the version will be not updated."
+      - name: Changes related to docs
+        if: contains(github.event.pull_request.labels.*.name, 'chore') 
+        shell: bash
+        run:  echo "Some tools or other stuff were added so the version will be not updated."
+  generate-changelog:
+    name: Generate Changelog
+    if: ${{ always() }}
+    runs-on: ubuntu-latest 
+    needs:
+      - next-release
+      - nothing-to-release
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Generate Changelog
+      uses: heinrichreimer/github-changelog-generator-action@v2.3
+      id: changelog
+      with:
+        token: ${{ github.token }}
+        excludeLabels: changelog
+    - name: Commit CHANGELOG.md via PR
+      id: pr
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.token }}
+        commit-message: "[Automated Change] Updating CHANGELOG.md"
+        delete-branch: true
+        branch: pr/changelog
+        title: "[Automated Change] Updating CHANGELOG.md"
+        body: "[Automated Change] Updating CHANGELOG.md"
+        labels: changelog
+        signoff: false
+    - name: Merge
+      uses: KeisukeYamashita/auto-pull-request-merge@v1.0.6
+      if: ${{ contains(github.event.pull_request.labels.*.name, 'feat') || contains(github.event.pull_request.labels.*.name, 'BREAKING CHANGE') || contains(github.event.pull_request.labels.*.name, 'fix') || contains(github.event.pull_request.labels.*.name, 'docs') || contains(github.event.pull_request.labels.*.name, 'refactor') || contains(github.event.pull_request.labels.*.name, 'chore')}}
+      with:
+        labels: changelog
+        pullRequestNumber: ${{ steps.pr.outputs.pull-request-number }}
+        strategy: squash
+        token: ${{ secrets.token }}
