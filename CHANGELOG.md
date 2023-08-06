@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased](https://github.com/PatrykIti/terraform-azurerm-resource-group-2/tree/HEAD)
+
+[Full Changelog](https://github.com/PatrykIti/terraform-azurerm-resource-group-2/compare/v1.0.0...HEAD)
+
+**Merged pull requests:**
+
+- Docs: Correcting examples  [\#3](https://github.com/PatrykIti/terraform-azurerm-resource-group-2/pull/3) ([PatrykIti](https://github.com/PatrykIti))
+
 ## [v1.0.0](https://github.com/PatrykIti/terraform-azurerm-resource-group-2/tree/v1.0.0) (2023-08-06)
 
 [Full Changelog](https://github.com/PatrykIti/terraform-azurerm-resource-group-2/compare/b486ad4f6be295e474d6feb4ac070a095a521b24...v1.0.0)
