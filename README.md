@@ -3,7 +3,7 @@
 <!-- [END BADGES] -->
 <h1 align="center">Terraform module for managing Azure Resource Groups (2 approach)</h1>
 
-<p>This is the second approach to this module and it is creating a little 'stress' in your TFVARS file when executing module, because you need to provide more variables for configuration. On the other hand, on the module level everything is as simple as possible.</p>
+<p>This is the second approach to this module and the module itself is a little more complext then in first approach but entire configuration is on the side of module execution. So your TFVARS will have less variables</p>
 
 <p>All modules were tested on my private Azure subscription before merged here, so if you encountered some problems than please check twice your configuration ☺️ </p>
 
