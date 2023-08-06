@@ -21,7 +21,7 @@ locals{
 
 #Primary Location
 module "rg_primary" {
-    source = "https://dev.azure.com/PC-ITI/ECW%20-%20Engine%20Car%20Watcher/_git/terraform-azurerm-resource-group-2?ref=v1.0.0"
+    source = "git::https://github.com/PatrykIti/terraform-azurerm-resource-group-2.git?ref=v1.0.0"
     resource_group = [ 
       {
         name      = join("-",[local.env_prefix_primary, local.resource_group_raw])
@@ -44,7 +44,7 @@ module "rg_primary" {
 
 #Secondary Region
 module "rg_secondary" {
-    source = "https://dev.azure.com/PC-ITI/ECW%20-%20Engine%20Car%20Watcher/_git/terraform-azurerm-resource-group-2?ref=v1.0.0"
+    source = "git::https://github.com/PatrykIti/terraform-azurerm-resource-group-2.git?ref=v1.0.0"
     resource_group = [ 
       {
         name      = join("-",[local.env_prefix_secondary, local.resource_group_raw])
@@ -68,7 +68,7 @@ module "rg_secondary" {
 #Testing outputs from module for Primary region
 #Only for showing how to get them after module execution
 #Outputs can be passed between modules of different resources
-#Please be awar that in this approach all outputs will be type of list of strings
+#Please be aware that in this approach all outputs will be type of list of strings
 output "resource_group_primary_name" {
   value = module.rg_primary.name
 }
@@ -85,7 +85,7 @@ output "resource_group_primary_id" {
 #Testing outputs from module for Secondary region
 #Only for showing how to get them after module execution
 #Outputs can be passed between modules of different resources
-#Please be awar that in this approach all outputs will be type of list of strings
+#Please be aware that in this approach all outputs will be type of list of strings
 output "resource_group_secondary_name" {
   value = module.rg_secondary.name
 }

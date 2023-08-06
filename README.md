@@ -46,7 +46,7 @@ locals{
 }
 
 module "rg" {
-    source = "https://dev.azure.com/PC-ITI/ECW%20-%20Engine%20Car%20Watcher/_git/terraform-azurerm-resource-group-2?ref=v1.0.0"
+    source = "git::https://github.com/PatrykIti/terraform-azurerm-resource-group-2.git?ref=v1.0.0"
     resource_group = [
       {
         name = join("-", [local.env_prefix, local.resource_group])
@@ -58,7 +58,7 @@ module "rg" {
 #Testing outputs from module
 #Only for showing how to get them after module execution
 #Outputs can be passed between modules of different resources
-#Please be awar that in this approach all outputs will be type of list of strings
+#Please be aware that in this approach all outputs will be type of list of strings
 output "name" {
   value = module.rg.name
 }
@@ -97,7 +97,7 @@ locals{
 
 #Primary Location
 module "rg_primary" {
-    source = "https://dev.azure.com/PC-ITI/ECW%20-%20Engine%20Car%20Watcher/_git/terraform-azurerm-resource-group-2?ref=v1.0.0"
+    source = "git::https://github.com/PatrykIti/terraform-azurerm-resource-group-2.git?ref=v1.0.0"
     resource_group = [ 
       {
         name      = join("-",[local.env_prefix_primary, local.resource_group_raw])
@@ -120,7 +120,7 @@ module "rg_primary" {
 
 #Secondary Region
 module "rg_secondary" {
-    source = "https://dev.azure.com/PC-ITI/ECW%20-%20Engine%20Car%20Watcher/_git/terraform-azurerm-resource-group-2?ref=v1.0.0"
+    source = "git::https://github.com/PatrykIti/terraform-azurerm-resource-group-2.git?ref=v1.0.0"
     resource_group = [ 
       {
         name      = join("-",[local.env_prefix_secondary, local.resource_group_raw])
@@ -144,7 +144,7 @@ module "rg_secondary" {
 #Testing outputs from module for Primary region
 #Only for showing how to get them after module execution
 #Outputs can be passed between modules of different resources
-#Please be awar that in this approach all outputs will be type of list of strings
+#Please be aware that in this approach all outputs will be type of list of strings
 output "resource_group_primary_name" {
   value = module.rg_primary.name
 }
@@ -161,7 +161,7 @@ output "resource_group_primary_id" {
 #Testing outputs from module for Secondary region
 #Only for showing how to get them after module execution
 #Outputs can be passed between modules of different resources
-#Please be awar that in this approach all outputs will be type of list of strings
+#Please be aware that in this approach all outputs will be type of list of strings
 output "resource_group_secondary_name" {
   value = module.rg_secondary.name
 }
@@ -199,7 +199,7 @@ locals{
 
 #Primary Location
 module "rg_primary" {
-    source = "https://dev.azure.com/PC-ITI/ECW%20-%20Engine%20Car%20Watcher/_git/terraform-azurerm-resource-group-2?ref=v1.0.0"
+    source = "git::git::https://github.com/PatrykIti/terraform-azurerm-resource-group-2.git?ref=v1.0.0"
     for_each = {for resource_group in local.list_of_resource_groups : resource_group => resource_group}
     resource_group = [ 
       {
@@ -213,7 +213,7 @@ module "rg_primary" {
 
 #Secondary Region
 module "rg_secondary" {
-    source = "https://dev.azure.com/PC-ITI/ECW%20-%20Engine%20Car%20Watcher/_git/terraform-azurerm-resource-group-2?ref=v1.0.0"
+    source = "git::https://github.com/PatrykIti/terraform-azurerm-resource-group-2.git?ref=v1.0.0"
     for_each = {for resource_group in local.list_of_resource_groups : resource_group => resource_group}
     resource_group = [ 
       {
@@ -228,7 +228,7 @@ module "rg_secondary" {
 #Testing outputs from module for Primary region
 #Only for showing how to get them after module execution
 #Outputs can be passed between modules of different resources
-#Please be awar that in this approach all outputs will be type of list of strings
+#Please be aware that in this approach all outputs will be type of list of strings
 output "resource_groups_primary" {
   value = [for rg in local.list_of_resource_groups : {
       name        = module.rg_primary[rg].name
@@ -242,7 +242,7 @@ output "resource_groups_primary" {
 #Testing outputs from module for Secondary region
 #Only for showing how to get them after module execution
 #Outputs can be passed between modules of different resources
-#Please be awar that in this approach all outputs will be type of list of strings
+#Please be aware that in this approach all outputs will be type of list of strings
 output "resource_groups_secondary" {
   value = [for rg in local.list_of_resource_groups : {
       name        = module.rg_secondary[rg].name
@@ -265,8 +265,8 @@ output "resource_groups_secondary" {
 
 | Name | Description |
 |------|-------------|
-| <a name="output_name"></a> [name](#output\_name) | [Output] Resource Group Name |
-| <a name="output_location"></a> [location](#output\_location) | [Output] Resource Group Location |
-| <a name="output_managed_by"></a> [managed\_by](#output\_managed\_by) | [Output] Resource Group Managed By |
-| <a name="output_id"></a> [id](#output\_id) | [Output] Resource Group ID |
+| <a name="output_name"></a> [name](#output\_name) | [Output,List(string)] Resource Group Name |
+| <a name="output_location"></a> [location](#output\_location) | [Output,List(string)] Resource Group Location |
+| <a name="output_managed_by"></a> [managed\_by](#output\_managed\_by) | [Output,List(string)] Resource Group Managed By |
+| <a name="output_id"></a> [id](#output\_id) | [Output,List(string)] Resource Group ID |
 <!-- END_TF_DOCS -->

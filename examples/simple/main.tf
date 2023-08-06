@@ -11,7 +11,7 @@ locals{
 }
 
 module "rg" {
-    source = "https://dev.azure.com/PC-ITI/ECW%20-%20Engine%20Car%20Watcher/_git/terraform-azurerm-resource-group-2?ref=v1.0.0"
+    source = "git::https://github.com/PatrykIti/terraform-azurerm-resource-group-2.git?ref=v1.0.0"
     resource_group = [
       {
         name = join("-", [local.env_prefix, local.resource_group])
@@ -23,7 +23,7 @@ module "rg" {
 #Testing outputs from module
 #Only for showing how to get them after module execution
 #Outputs can be passed between modules of different resources
-#Please be awar that in this approach all outputs will be type of list of strings
+#Please be aware that in this approach all outputs will be type of list of strings
 output "name" {
   value = module.rg.name
 }
